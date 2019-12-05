@@ -1,0 +1,27 @@
+链表用于redis的各种功能：
+	1、列表键
+	2、发布和订阅
+	3、慢查询
+	4、监视器
+
+typedef struct list {
+	// 表头节点
+	listNode *head;
+	// 表尾节点
+	listNode *tail;
+	// 链表节点数量
+	unsigned long len;
+	// 节点值复制函数
+	void *(*dup)(void *ptr)
+	// 节点值释放函数
+	void (*free)(void *ptr)
+	// 节点值对比函数
+	int (*match)(void *ptr)
+}list;
+
+特性：
+1、双端链表，prev和next指针
+2、无环链表
+3、带有表头和表尾节点
+4、常数获取字符串长度
+5、可保存不同类型的值

@@ -1,0 +1,16 @@
+redis字符串sds（simple dynamic string）
+
+struct sdshdr {
+	// 记录buf已使用的数量
+	int len;
+	// 记录buf中未使用的数量
+	int free;
+	// 字符数组，用于保存字符串
+	char []buf;
+}
+
+优点：
+1、常数时间复杂度获取字符串长度
+2、杜绝缓存区溢出
+3、减少修改字符串时带来内存从新分配次数
+4、二进制安全

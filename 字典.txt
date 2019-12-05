@@ -1,0 +1,52 @@
+字典，别名符号表、关联数组、映射，保存键值对的数据，使用广泛：
+	1、数据库
+	2、哈希键
+
+
+字典使用哈希表做为底层实现，一个哈希表可以有多个哈希表节点，没个节点保存kv对
+
+1、哈希表
+
+typedef struct dictht{
+	// hash表数组
+	dictEntry **table;
+	// hash表大小
+	unsigned long size;
+	// 用于计算索引值
+	unsigned long sizemask;
+	// hash表已有节点数量
+	unsigned long used;
+} dictht;
+
+typedef struct dictEntry {
+	void *key;
+	union{
+		void *val;
+		uint64_t u64;
+		int64_t s64;
+	} v;
+	struct dictEntry *next
+} dictEntry;
+
+使用murmurhash计算hash
+使用地址链接法来解决键冲突
+
+2、字典
+
+typedef struct dict {
+	dictType *type;
+	void *privdata;
+	// 一般情况下
+	// 字典存储使用ht[0], 当需要rehash时需要使用ht[1]
+	dictht ht[2];
+	int rehashidx;
+} dict;
+
+字典hash表的rehash条件：
+	1）服务器没有执行BGSAVE或BGREWRITEAOF，且负载因子大于1；
+	2）服务器有执行BGSAVE或BGREWRITEAOF，且负载因子大于5；
+渐进式rehash，在执行rehash期间对于操作命令在两张表中分别执行
+    新增操作，保存到新表ht[1]中，不操作ht[0]；这样ht[0]只减不增，慢慢的ht[0]键变成空表。
+    删、改操作在ht[0]执行完成时，会在ht[1]中也执行一次；
+    查找操作西安查找ht[0]，如果成功返回，如果未查到，在ht[1]中再查找一次；
+    
