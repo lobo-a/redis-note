@@ -13,3 +13,8 @@
 三、批量操作，集群模式下操作
 	在通过getSlot获取对应的node，通过pipeline操作
 	如果是哨兵模式下，如何操作呢
+
+四、集群模式下多个key存储到同一个节点设置 https://redis.io/docs/latest/operate/oss_and_stack/reference/cluster-spec/#hash-tags
+	关键字： {...}
+	如：{user:1001}.name lobo
+	{user:1001}.age  33 就会在同一个节点上
